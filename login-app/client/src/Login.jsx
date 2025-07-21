@@ -7,20 +7,27 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [strength, setStrength] = useState(0);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       const res = await axios.post("http://localhost:5000/api/login", {
         email,
         password,
       });
-      localStorage.setItem("token", res.data.token);
-      console.log("Login successful");
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", res.data.token);
+      alert("Login successful");
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,30 +37,58 @@ export default function Login() {
 
       <input
         type="email"
-        placeholder="Email"
-        required
+        aria-label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         className="form-input"
+        placeholder="Enter your email"
+        required
       />
 
       <input
-        type="password"
-        placeholder="Password"
-        required
+        type={showPassword ? "text" : "password"}
+        aria-label="Password"
         value={password}
         onChange={(e) => {
           setPassword(e.target.value);
           setStrength(zxcvbn(e.target.value).score);
         }}
         className="form-input"
+        placeholder="Enter your password"
+        required
       />
 
       <div className="password-strength">Password Strength: {strength} / 4</div>
 
-      <button type="submit" className="form-button">
-        Login
+      <div className="form-options">
+        <label>
+          <input
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
+          Remember me
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          Show password
+        </label>
+      </div>
+
+      <button type="submit" className="form-button" disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
+
+      <div className="toggle-container">
+        <button className="toggle-button" disabled title="Not implemented yet">
+          Forgot password?
+        </button>
+      </div>
 
       {error && <p className="error-message">{error}</p>}
     </form>
