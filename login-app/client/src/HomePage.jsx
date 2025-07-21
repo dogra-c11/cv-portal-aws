@@ -5,7 +5,7 @@ import ForgotPassword from "./ForgotPassword";
 import "./style.css";
 
 export default function HomePage() {
-  const [view, setView] = useState("login");
+  const [view, setView] = useState("register");
 
   const renderForm = () => {
     switch (view) {

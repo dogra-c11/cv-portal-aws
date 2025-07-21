@@ -102,10 +102,61 @@
   text-align: center;
 }
 
-.password-strength {
+.password-warning {
+  font-size: 0.85rem;
+  color: #d9534f;
+  margin-bottom: 0.3rem;
+}
+
+.password-suggestions {
   font-size: 0.85rem;
   margin-bottom: 0.5rem;
-  color: #666;
+  padding-left: 1.2rem;
+  color: #555;
+}
+
+.password-suggestions li {
+  list-style-type: disc;
+  margin-bottom: 0.25rem;
+}
+
+.password-strength {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.password-strength.danger {
+  color: #dc3545; /* red */
+}
+
+.password-strength.warning {
+  color: #fd7e14; /* orange */
+}
+
+.password-strength.info {
+  color: #17a2b8; /* blue */
+}
+
+.password-strength.success {
+  color: #28a745; /* green */
+}
+
+.password-warning {
+  font-size: 0.85rem;
+  color: #fd7e14; /* orange */
+  margin-bottom: 0.3rem;
+}
+
+.password-suggestions {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.2rem;
+  color: #28a745; /* green */
+}
+
+.password-suggestions li {
+  list-style-type: none;
+  margin-bottom: 0.25rem;
 }
 
 /* Mobile responsiveness */

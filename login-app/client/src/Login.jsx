@@ -1,12 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
-import zxcvbn from "zxcvbn";
 import "./style.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [strength, setStrength] = useState(0);
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -57,8 +55,6 @@ export default function Login() {
         placeholder="Enter your password"
         required
       />
-
-      <div className="password-strength">Password Strength: {strength} / 4</div>
 
       <div className="form-options">
         <label>
