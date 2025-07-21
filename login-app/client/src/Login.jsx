@@ -84,12 +84,6 @@ export default function Login() {
         {loading ? "Logging in..." : "Login"}
       </button>
 
-      <div className="toggle-container">
-        <button className="toggle-button" disabled title="Not implemented yet">
-          Forgot password?
-        </button>
-      </div>
-
       {error && <p className="error-message">{error}</p>}
     </form>
   );
