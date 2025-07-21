@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import "./style.css";
 
-export default function Login() {
+export default function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -21,8 +21,8 @@ export default function Login() {
         password,
       });
       const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("token", res.data.token);
-      alert("Login successful");
+      storage.setItem("authToken", res.data.token);
+      onLoginSuccess();
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     } finally {
