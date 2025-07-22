@@ -5,8 +5,6 @@ import User from '../models/User.js';
 export const registerUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
-
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(409).json({ error: 'Email already registered' });
 
@@ -23,9 +21,8 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
     const user = await User.findOne({ email });
-    if (!user) return res.status(401).json({ error: 'Invalid email' });
+    if (!user) return res.status(401).json({ error: 'No account exists with this email, Please create a new account first.' });
  
     if (user.lockUntil && user.lockUntil > Date.now()) { // Check if account is locked
     const waitTime = Math.ceil((user.lockUntil - Date.now()) / 60000);
@@ -63,16 +60,12 @@ export const loginUser = async (req, res) => {
 export const getUser = async (req, res) => {
     try {
 
-const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  const authHeader = req.headers.authorization;
 
   const token = authHeader.split(' ')[1];
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return res.json({ email: decoded.email });
+    return res.json({ email: decoded.email, validUser: true });
   } catch (err) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
