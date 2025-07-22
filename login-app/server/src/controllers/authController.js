@@ -26,9 +26,27 @@ export const loginUser = async (req, res) => {
     if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ error: 'Invalid email' });
+ 
+    if (user.lockUntil && user.lockUntil > Date.now()) { // Check if account is locked
+    const waitTime = Math.ceil((user.lockUntil - Date.now()) / 60000);
+    return res.status(403).json({ error: `Account locked. Try again in ${waitTime} minute(s).` });
+  }
 
     const match = await bcrypt.compare(password, user.passwordHash);
-    if (!match) return res.status(401).json({ error: 'Invalid password' });
+    if (!match) {
+    user.failedLoginAttempts += 1;
+
+    if (user.failedLoginAttempts >= 5) {
+      user.lockUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+    }
+
+    await user.save();
+    return res.status(401).json({ error: 'Invalid password' });
+  }
+
+    user.failedLoginAttempts = 0;
+    user.lockUntil = null;
+    await user.save();
 
     const token = jwt.sign(
       { id: user._id, email: user.email },

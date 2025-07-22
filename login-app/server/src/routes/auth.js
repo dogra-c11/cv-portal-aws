@@ -5,8 +5,8 @@ import { registerUser, loginUser, getUser } from '../controllers/authController.
 import { validJson } from '../middlewares/validJson.js';
 const router = express.Router()
 const rateLimiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 5, 
+	windowMs: 10 * 60 * 1000, // 10 minutes
+	limit: 10, 
 	standardHeaders: 'draft-8',
     message: {'error' : 'Too many login attempts. Please try again after some time.'},
 	legacyHeaders: false, 
