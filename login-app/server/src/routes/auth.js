@@ -4,6 +4,7 @@ import { rateLimit } from "express-rate-limit";
 import {
   registerUser,
   loginUser,
+  verifyOtp,
   getUser,
 } from "../controllers/authController.js";
 import { validJson } from "../middlewares/validJson.js";
@@ -38,6 +39,10 @@ const loginValidator = [
   body("email").trim().isEmail().withMessage("Invalid email"),
   body("password").notEmpty().isString().withMessage("Password is missing"),
 ];
+const otpValidator = [
+  body("email").trim().isEmail().withMessage("Invalid email"),
+  body("otpCode").notEmpty().isString().withMessage("Otp is missing"),
+];
 const userValidator = [
   header("authorization")
     .notEmpty()
@@ -59,5 +64,6 @@ router.use(cors());
 router.use(validJson);
 router.post("/register", registerValidator, validate, registerUser);
 router.post("/login", rateLimiter, loginValidator, validate, loginUser);
+router.post("/verify-otp", otpValidator, validate, verifyOtp);
 router.get("/user", userValidator, validate, getUser);
 export default router;

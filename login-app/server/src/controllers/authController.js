@@ -66,6 +66,39 @@ export const loginUser = async (req, res) => {
   }
 };
 
+export const verifyOtp = async (req, res) => {
+  try {
+    const { email, otpCode } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || !user.mfaEnabled) return res.status(401).json({ error: 'Invalid request' });
+
+    const now = new Date();
+
+    if (!user.otpCode || user.otpExpiry < now) {
+      return res.status(401).json({ error: 'OTP expired or invalid' });
+    }
+
+    if (user.otpCode !== otpCode) {
+      return res.status(401).json({ error: 'Incorrect OTP' });
+    }
+
+    user.otpCode = null;
+    user.otpExpiry = null;
+    await user.save();
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ error: `Server error ${err}` });
+  }
+};
+
+
 export const getUser = async (req, res) => {
     try {
 
