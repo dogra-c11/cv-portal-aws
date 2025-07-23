@@ -1,17 +1,35 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Login from "./Login";
 import Register from "./Register";
+import OtpVerify from "./VerifyOtp";
 import ForgotPassword from "./ForgotPassword";
 import Portal from "./Portal";
 import "./style.css";
 
 export default function HomePage() {
   const [view, setView] = useState("login");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
     if (token) setView("portal");
   }, []);
+
+  const handleLoginSuccess = (email, mfaRequired, rememberMeFlag = false) => {
+    if (mfaRequired) {
+      setLoginEmail(email);
+      setRememberMe(rememberMeFlag);
+      setView("VerifyOtp");
+    } else {
+      setView("portal");
+    }
+  };
+
+  const handleOtpSuccess = () => {
+    setView("portal");
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -23,8 +41,16 @@ export default function HomePage() {
     switch (view) {
       case "register":
         return <Register />;
-        case "login":
-        return <Login onLoginSuccess={() => setView("portal")}/>;
+      case "login":
+        return <Login onLoginSuccess={handleLoginSuccess} />;
+      case "VerifyOtp":
+        return (
+          <OtpVerify
+            email={loginEmail}
+            rememberMe={rememberMe}
+            onOtpSuccess={handleOtpSuccess}
+          />
+        );
       case "forgot":
         return <ForgotPassword />;
       default:
@@ -69,6 +95,13 @@ export default function HomePage() {
         {view === "forgot" && (
           <p>
             Remembered your password?{" "}
+            <button onClick={() => setView("login")} className="toggle-button">
+              Back to login
+            </button>
+          </p>
+        )}
+        {view === "VerifyOtp" && (
+          <p>
             <button onClick={() => setView("login")} className="toggle-button">
               Back to login
             </button>

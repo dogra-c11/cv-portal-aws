@@ -20,9 +20,14 @@ export default function Login({ onLoginSuccess }) {
         email,
         password,
       });
-      const storage = rememberMe ? localStorage : sessionStorage;
-      storage.setItem("authToken", res.data.token);
-      onLoginSuccess();
+
+      if (res.data.mfaRequired) {
+        onLoginSuccess(email, true, rememberMe); // Go to OTP screen
+      } else {
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem("authToken", res.data.token);
+        onLoginSuccess(email, false);
+      }
     } catch (err) {
       setError(err.response?.data?.error || "Login failed");
     } finally {
