@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/User.js';
 
 export const registerUser = async (req, res) => {
@@ -44,6 +45,14 @@ export const loginUser = async (req, res) => {
     user.failedLoginAttempts = 0;
     user.lockUntil = null;
     await user.save();
+
+    if (user.mfaEnabled) {
+      const otpCode = crypto.randomInt(100000, 999999).toString(); // Generate a 6-digit OTP
+      user.otpCode = otpCode;
+      user.otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 mins
+      await user.save();
+      return res.status(200).json({ mfaRequired: true, email });
+    }
 
     const token = jwt.sign(
       { id: user._id, email: user.email },
