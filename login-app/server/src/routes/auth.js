@@ -29,7 +29,11 @@ const registerValidator = [
     .isString()
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-];
+    body("mfaEnabled")
+    .optional()
+    .isBoolean()
+    .withMessage("MFA enabled must be a boolean value"),
+  ];
 const loginValidator = [
   body("email").trim().isEmail().withMessage("Invalid email"),
   body("password").notEmpty().isString().withMessage("Password is missing"),

@@ -9,6 +9,7 @@ export default function Register() {
   const [score, setScore] = useState(0);
   const [feedback, setFeedback] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [mfaEnabled, setMfaEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -27,6 +28,7 @@ export default function Register() {
       await axios.post(`${API_URL}/register`, {
         email,
         password,
+        mfaEnabled,
       });
       setSuccess("Registration successful. You can now log in.");
       setEmail("");
@@ -134,6 +136,14 @@ export default function Register() {
           />
           Show password
         </label>
+        <label className="checkbox-label">
+        <input
+          type="checkbox"
+          checked={mfaEnabled}
+          onChange={() => setMfaEnabled(!mfaEnabled)}
+        />
+        Enable 2-Step Verification (MFA)
+      </label>
       </div>
 
       <button type="submit" className="form-button" disabled={loading}>

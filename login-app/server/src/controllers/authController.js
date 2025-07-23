@@ -4,12 +4,12 @@ import User from '../models/User.js';
 
 export const registerUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, mfaEnabled  } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) return res.status(409).json({ error: 'Email already registered' });
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = new User({ email, passwordHash });
+    const user = new User({ email, passwordHash, mfaEnabled });
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully' });
