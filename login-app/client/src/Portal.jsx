@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import './style.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "./style.css";
 
 export default function Portal({ onLogout }) {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+    const token =
+      localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
 
     if (!token) {
       onLogout();
@@ -25,7 +26,7 @@ export default function Portal({ onLogout }) {
         setEmail(res.data.email);
       })
       .catch((err) => {
-        console.error('Token invalid or expired');
+        console.error("Token invalid or expired");
         onLogout();
       });
   }, []);

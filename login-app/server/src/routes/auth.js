@@ -9,7 +9,9 @@ import {
 } from "../controllers/authController.js";
 import { validJson } from "../middlewares/validJson.js";
 import { header, body, validationResult } from "express-validator";
+
 const router = express.Router();
+
 const rateLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
   limit: 10,
@@ -20,6 +22,7 @@ const rateLimiter = rateLimit({
   legacyHeaders: false,
   ipv6Subnet: 56,
 });
+
 const registerValidator = [
   body("email")
     .trim()
@@ -30,19 +33,22 @@ const registerValidator = [
     .isString()
     .isLength({ min: 6 })
     .withMessage("Password must be at least 6 characters long"),
-    body("mfaEnabled")
+  body("mfaEnabled")
     .optional()
     .isBoolean()
     .withMessage("MFA enabled must be a boolean value"),
-  ];
+];
+
 const loginValidator = [
   body("email").trim().isEmail().withMessage("Invalid email"),
   body("password").notEmpty().isString().withMessage("Password is missing"),
 ];
+
 const otpValidator = [
   body("email").trim().isEmail().withMessage("Invalid email"),
   body("otpCode").notEmpty().isString().withMessage("Otp is missing"),
 ];
+
 const userValidator = [
   header("authorization")
     .notEmpty()
@@ -60,6 +66,7 @@ const validate = (req, res, next) => {
   }
   next();
 };
+
 router.use(cors());
 router.use(validJson);
 router.post("/register", registerValidator, validate, registerUser);

@@ -137,13 +137,13 @@ export default function Register() {
           Show password
         </label>
         <label className="checkbox-label">
-        <input
-          type="checkbox"
-          checked={mfaEnabled}
-          onChange={() => setMfaEnabled(!mfaEnabled)}
-        />
-        Enable 2-Step Verification (MFA)
-      </label>
+          <input
+            type="checkbox"
+            checked={mfaEnabled}
+            onChange={() => setMfaEnabled(!mfaEnabled)}
+          />
+          Enable 2-Step Verification (MFA)
+        </label>
       </div>
 
       <button type="submit" className="form-button" disabled={loading}>
