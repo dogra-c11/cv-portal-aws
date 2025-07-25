@@ -39,9 +39,11 @@ This section walks through how data flows through the system for each core use c
 
 ## 4. Batch Processing (Data Cleanup & Analytics)
 
-1. A scheduled event (like a daily CloudWatch cron) triggers a Lambda function.
-2. It cleans up old unlinked CVs or expired sessions.
-3. It could also generate simple analytics — like how many CVs were uploaded this week or which skills are trending.
-4. These analytics can be stored in a separate table or exported to a reporting dashboard.
+1. A scheduled AWS Lambda function runs periodically (e.g. daily).
+2. It checks for duplicate CVs based on name and email, removing older ones.
+3. It can also generate simple analytics like:
+   - Total CVs uploaded this week
+   - Most common skills in job postings
+4. Results are stored in a separate analytics table or sent to a reporting dashboard.
 
 ---
